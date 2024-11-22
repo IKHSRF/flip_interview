@@ -16,47 +16,59 @@ interface TransactionCardProps {
 
 const TransactionCard: React.FC<TransactionCardProps> = ({transaction}) => {
   return (
-    <View style={style.transactionCard}>
-      <View>
-        <View style={GlobalStyles.row}>
-          {transaction.sender_bank.length > 3 ? (
-            <Text style={GlobalStyles.title}>
-              {capitalizeFirstLetter(transaction.sender_bank)}
-            </Text>
-          ) : (
-            <Text style={GlobalStyles.title}>
-              {transaction.sender_bank.toUpperCase()}
-            </Text>
-          )}
+    <View
+      style={[
+        style.transactionCardOuter,
+        transaction.status === 'SUCCESS'
+          ? {
+              backgroundColor: '#f46345',
+            }
+          : {
+              backgroundColor: '#54b987',
+            },
+      ]}>
+      <View style={style.transactionCard}>
+        <View>
+          <View style={GlobalStyles.row}>
+            {transaction.sender_bank.length > 3 ? (
+              <Text style={GlobalStyles.title}>
+                {capitalizeFirstLetter(transaction.sender_bank)}
+              </Text>
+            ) : (
+              <Text style={GlobalStyles.title}>
+                {transaction.sender_bank.toUpperCase()}
+              </Text>
+            )}
 
-          <Icon name="arrow-right" style={style.arrow} />
+            <Icon name="arrow-right" style={style.arrow} />
 
-          {transaction.beneficiary_bank.length > 4 ? (
-            <Text style={GlobalStyles.title}>
-              {capitalizeFirstLetter(transaction.beneficiary_bank)}
-            </Text>
-          ) : (
-            <Text style={GlobalStyles.title}>
-              {transaction.beneficiary_bank.toUpperCase()}
-            </Text>
-          )}
-        </View>
-        <Text style={GlobalStyles.body}>
-          {transaction.beneficiary_name.toUpperCase()}
-        </Text>
-        <View style={GlobalStyles.row}>
+            {transaction.beneficiary_bank.length > 4 ? (
+              <Text style={GlobalStyles.title}>
+                {capitalizeFirstLetter(transaction.beneficiary_bank)}
+              </Text>
+            ) : (
+              <Text style={GlobalStyles.title}>
+                {transaction.beneficiary_bank.toUpperCase()}
+              </Text>
+            )}
+          </View>
           <Text style={GlobalStyles.body}>
-            {formatRupiah(transaction.amount)}
+            {transaction.beneficiary_name.toUpperCase()}
           </Text>
-          <DotIcon size={6} color="black" />
-          <Text style={GlobalStyles.body}>
-            {formatDate(transaction.created_at)}
-          </Text>
+          <View style={GlobalStyles.row}>
+            <Text style={GlobalStyles.body}>
+              {formatRupiah(transaction.amount)}
+            </Text>
+            <DotIcon size={6} color="black" />
+            <Text style={GlobalStyles.body}>
+              {formatDate(transaction.created_at)}
+            </Text>
+          </View>
         </View>
-      </View>
-      <View style={GlobalStyles.flexRow} />
-      <View>
-        <CustomButton type={transaction.status} onPress={() => {}} />
+        <View style={GlobalStyles.flexRow} />
+        <View>
+          <CustomButton type={transaction.status} onPress={() => {}} />
+        </View>
       </View>
     </View>
   );
@@ -69,10 +81,17 @@ const style = StyleSheet.create({
   },
   transactionCard: {
     backgroundColor: 'white',
-    marginVertical: 4,
     padding: 14.0,
     paddingVertical: 18,
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  transactionCardOuter: {
+    marginVertical: 4,
     borderRadius: 8,
+    paddingLeft: 10,
     flexDirection: 'row',
     alignItems: 'center',
   },
