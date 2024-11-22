@@ -1,54 +1,48 @@
-import { useState, useEffect } from 'react'; // React hooks for managing state and side effects
-import { fetchData } from '../services/TransactionServices'; // A custom function to fetch data from the API
-import { Transactions } from '../types/Transaction'; // TypeScript type for the structure of transaction data
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux'; // Hook for dispatching Redux actions
+import { setTransactions, setLoading, setError } from '../state/transactionSlice'; // Import Redux actions to update the state
+import { fetchData } from '../services/TransactionServices'; // Import the custom fetch function from services
 
-// Custom hook `useFetch` that takes a URL as input and returns data, loading state, and error state
+/**
+ * Custom hook to fetch transaction data from a given URL using the `fetchData` service function.
+ *
+ * This hook interacts with Redux to manage the loading, data, and error state for the fetched transactions.
+ * It dispatches actions to update the Redux store during the fetch process.
+ */
 const useFetch = (url: string) => {
-    // State hook for storing the fetched transaction data.
-    // Initially set to null because data is not yet fetched.
-    const [data, setData] = useState<Transactions | null>(null);
+  const dispatch = useDispatch();
 
-    // State hook for tracking the loading state of the API call.
-    // Initially set to `true` since data is being fetched on mount.
-    const [loading, setLoading] = useState<Boolean>(true);
+  useEffect(() => {
+    const fetchDataFromApi = async () => {
+      try {
+        // Before starting the fetch operation, dispatch the `setLoading` action to indicate that data is being loaded
+        dispatch(setLoading(true));
 
-    // State hook for storing any error that may occur during the fetch.
-    // Initially set to `null` since no error has occurred yet.
-    const [error, setError] = useState<string | null>(null);
+        // Call the `fetchData` function from the `TransactionServices` to make the actual API request
+        // `fetchData` is expected to return the fetched data
+        const data = await fetchData(url);
 
-    // useEffect hook runs after every render when dependencies change.
-    // In this case, it runs when the `url` changes, initiating a new API call.
-    useEffect(() => {
-        // Define an async function inside the effect to perform the fetch operation.
-        const fetchDataFromApi = async () => {
-            try {
-                // Call the `fetchData` function (imported from services) to make the API request.
-                // `fetchData` will return a Promise that resolves with the response data.
-                const response = await fetchData(url);
+        // Dispatch the action to store the fetched transactions in the Redux state
+        // The data is expected to be in a structure suitable for Redux (e.g., an array of transactions)
+        dispatch(setTransactions(data));
 
-                // Once the data is fetched, cast it to the `Transactions` type for type safety.
-                // This ensures that the data structure aligns with the expected format.
-                const tranasctionData: Transactions = response;
+        // Once the data is fetched successfully, dispatch the `setLoading` action to stop the loading indicator
+        dispatch(setLoading(false));
+      } catch (err) {
+        // If there is an error during the fetch operation, dispatch the `setError` action to store the error message in the Redux state
+        dispatch(setError('Failed to fetch transactions.'));
 
-                // Update the `data` state with the fetched data.
-                setData(tranasctionData);
-            } catch(err: any) {
-                // Update the `error` state to store the error message.
-                setError(err.message);
-            } finally {
-                // Set `loading` to `false` after the fetch operation completes (whether successful or failed).
-                setLoading(false);
-            }
-        };
+        // Set the loading state to false after the error
+        dispatch(setLoading(false));
+      }
+    };
 
-        // Call the fetch function to start fetching data as soon as the component mounts or the `url` changes.
-        fetchDataFromApi();
-    }, [url]); // The effect depends on `url`, so it runs every time the `url` changes.
+    // Call the `fetchDataFromApi` function to initiate the fetch process
+    fetchDataFromApi();
+  }, [url, dispatch]);
 
-    // Return an object with the `data`, `loading`, and `error` state.
-    // This allows the calling component to access the result of the fetch operation,
-    // track the loading state, and handle any errors appropriately.
-    return {data, loading, error};
+  // The hook does not return any data directly, as the state (like `transactions`, `loading`, and `error`) is managed by Redux
+  return {}; // Return an empty object because Redux handles the state
 };
 
 export default useFetch;
