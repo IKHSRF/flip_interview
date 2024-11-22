@@ -15,7 +15,7 @@ const DotIcon: React.FC<{size?: number; color?: string}> = ({
 const styles = StyleSheet.create({
   dot: {
     borderRadius: 50,
-    marginHorizontal: 5,
+    marginHorizontal: 3,
   },
 });
 

@@ -19,7 +19,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({transaction}) => {
     <View
       style={[
         style.transactionCardOuter,
-        transaction.status === 'SUCCESS'
+        transaction.status === 'PENDING'
           ? {
               backgroundColor: '#f46345',
             }

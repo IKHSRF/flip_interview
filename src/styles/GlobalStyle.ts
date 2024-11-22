@@ -25,12 +25,13 @@ const GlobalStyles = StyleSheet.create({
         alignItems: 'center',
     },
     title: {
-        fontWeight: 'bold',
+        fontWeight: '800',
         fontSize: 16,
+        marginVertical: 5,
     },
     body: {
-        fontWeight: 'medium',
-        paddingVertical: 2,
+        fontWeight: '600',
+        paddingVertical: 3,
     },
   });
 

@@ -34,8 +34,8 @@ const CustomButton: React.FC<ButtonProps> = ({onPress, type = 'SUCCESS'}) => {
 
 const styles = StyleSheet.create({
   button: {
-    paddingHorizontal: 8,
-    paddingVertical: 6,
+    paddingHorizontal: 7,
+    paddingVertical: 4,
     borderRadius: 6,
     alignItems: 'center',
     justifyContent: 'center',
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   oneLineButton: {
     backgroundColor: 'transparent',
     borderColor: '#f46345',
-    borderWidth: 2,
+    borderWidth: 1.5,
   },
   label: {
     fontWeight: 'bold',
