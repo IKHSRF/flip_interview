@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'; // Simplified way to create a Redux store
-import transactionReducer from './transactionSlice'; // Reducer for managing transaction-related state
+import transactionReducer from './TransactionSlice'; // Reducer for managing transaction-related state
 
 // Create and configure the Redux store
 const store = configureStore({
