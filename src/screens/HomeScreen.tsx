@@ -25,13 +25,24 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import GlobalStyles from '../styles/GlobalStyle';
+import TransactionCard from '../components/TransactionCard';
+
+// Redux hooks for state management
+import {useSelector, useDispatch} from 'react-redux';
+import {setSortOption, setQuery} from '../state/TransactionSlice'; // Import actions
+import {RootState} from '../state/TransactionStore'; // Import RootState type for type safety
 
 // Custom hooks for fetching the data
 import useFetch from '../hooks/TransactionHooks';
-import TransactionCard from '../components/TransactionCard';
 
-import {Transaction} from '../types/Transaction'; // Import the Transactions type
+// Import the Transactions type
+import {Transaction} from '../types/Transaction';
 
+/**
+ * Filters the transactions based on the search query.
+ * It checks if any of the transaction fields (beneficiary name, sender bank, beneficiary bank and amount)
+ * contains the query string.
+ */
 const searchTransactions = (
   transactions: Transaction[],
   query: string,
@@ -42,47 +53,37 @@ const searchTransactions = (
       transaction.beneficiary_name.toLowerCase().includes(lowerCaseQuery) ||
       transaction.sender_bank.toLowerCase().includes(lowerCaseQuery) ||
       transaction.beneficiary_bank.toLowerCase().includes(lowerCaseQuery) ||
-      transaction.amount.toString().includes(query) // Match exact numbers in amount
+      transaction.amount.toString().includes(query)
     );
   });
 };
 
 const HomeScreen: React.FC = () => {
-  const [query, setQuery] = useState(''); // State for the search query
-  const [sortOption, setSortOption] = useState<string | null>(null);
-  const [showFilter, setShowFilter] = useState(false); // State to toggle filter dropdown
-  /**
-   * Fetches transaction data from the API using the `useFetch` hook.
-   * The hook provides:
-   * - `data`: The fetched data, or null if not available.
-   * - `loading`: Indicates whether the fetch operation is in progress.
-   * - `error`: Contains an error message if the fetch fails.
-   */
-  const {data, loading, error} = useFetch(
-    'https://recruitment-test.flip.id/frontend-test', // API URL for transaction data
+  const dispatch = useDispatch(); // Dispatch function to trigger actions
+  const [showFilter, setShowFilter] = useState(false); // State to toggle visibility of sorting filter dialog
+
+  // Accessing the transaction state from Redux
+  const {transactions, loading, error, sortOption, query} = useSelector(
+    (state: RootState) => state.transactions,
   );
 
   /**
-   * Displays a loading indicator while the data is being fetched.
+   * Updates the search query in Redux state when the user types into the search field.
+   * @param newQuery The new query entered by the user.
    */
-  if (loading) {
-    return <ActivityIndicator style={GlobalStyles.loader} />;
-  }
+  const handleQueryChange = (newQuery: string) => {
+    dispatch(setQuery(newQuery)); // Dispatch action to update query in Redux store
+  };
+
+  // Fetch the transaction data using the custom useFetch hook
+  useFetch('https://recruitment-test.flip.id/frontend-test');
 
   /**
-   * Displays an error message if the fetch operation fails.
+   * Filter transactions based on the search query.
+   * The `searchTransactions` function filters the transactions based on the user's input.
    */
-  if (error) {
-    return <Text style={GlobalStyles.error}>{error}</Text>;
-  }
-
-  /**
-   * Converts the fetched data, which is in dictionary format, into an array.
-   * If no data is available, it defaults to an empty array.
-   */
-  const transactions = data ? Object.values(data) : [];
-  // Filtered transactions based on the search query
   const filteredTransactions = searchTransactions(transactions, query);
+
   // Sorting logic
   const sortedTransactions = [...filteredTransactions].sort((a, b) => {
     if (sortOption === 'nameAZ') {
@@ -115,6 +116,21 @@ const HomeScreen: React.FC = () => {
         return 'URUTKAN';
     }
   };
+
+  /**
+   * Displays a loading indicator while the data is being fetched.
+   */
+  if (loading) {
+    return <ActivityIndicator style={GlobalStyles.loader} />;
+  }
+
+  /**
+   * Displays an error message if the fetch operation fails.
+   */
+  if (error) {
+    return <Text style={GlobalStyles.error}>{error}</Text>;
+  }
+
   /**
    * Renders the list of transactions inside a scrollable container.
    * Each transaction is displayed with details like Sender Bank, Beneficiary Bank, Beneficiary Name, Amount, Status and Created At.
@@ -127,39 +143,44 @@ const HomeScreen: React.FC = () => {
   return (
     <ScrollView>
       <View style={GlobalStyles.container}>
+        {/* Search Input and Sort Filter */}
         <View style={style.search}>
           <Icon name="search" style={style.searchIcon} />
           <TextInput
             style={style.searchInput}
             placeholder="Cari nama, bank, atau nominal"
-            value={query}
-            onChangeText={setQuery} // Update search query on input change
+            value={query} // Bind query value from Redux state
+            onChangeText={handleQueryChange} // Update Redux state with query change
           />
           <TouchableOpacity
-            onPress={() => setShowFilter(!showFilter)}
+            onPress={() => setShowFilter(!showFilter)} // Toggle filter dialog visibility
             style={GlobalStyles.row}>
             <Text style={style.filterText}>{getSortLabel()}</Text>
             <Icon name="chevron-down" style={style.filterIcon} />
           </TouchableOpacity>
         </View>
         <View style={GlobalStyles.spacerHeight} />
+
+        {/* Render filtered and sorted transactions */}
         {sortedTransactions.length > 0 ? (
           sortedTransactions.map(transaction => (
             <TransactionCard key={transaction.id} transaction={transaction} />
           ))
         ) : (
-          <Text>No transaction data available</Text>
+          <Text>No transaction data available</Text> // Fallback message if no transactions match the filters
         )}
         <View style={GlobalStyles.spacerHeight} />
 
         {/* Sorting Dialog */}
         <Modal
-          visible={showFilter}
+          visible={showFilter} // Control visibility of the sort filter modal
           transparent={true}
           animationType="slide"
-          onRequestClose={() => setShowFilter(false)}>
+          onRequestClose={() => setShowFilter(false)} // Close the modal
+        >
           <View style={style.modalOverlay}>
             <View style={style.modalContent}>
+              {/* List of sorting options */}
               {[
                 {label: 'URUTKAN', value: null},
                 {label: 'Nama A-Z', value: 'nameAZ'},
@@ -171,13 +192,13 @@ const HomeScreen: React.FC = () => {
                   key={option.value || 'default'}
                   style={style.option}
                   onPress={() => {
-                    setSortOption(option.value);
-                    setShowFilter(false);
+                    dispatch(setSortOption(option.value)); // Dispatch sort option update to Redux
+                    setShowFilter(false); // Close the modal after selecting an option
                   }}>
                   <View style={style.optionRow}>
                     <View style={style.radioOuter}>
                       <View
-                        style={[sortOption === option.value && style.radio]}
+                        style={[sortOption === option.value && style.radio]} // Highlight selected option
                       />
                     </View>
                     <Text style={style.optionText}>{option.label}</Text>
