@@ -140,6 +140,7 @@ const HomeScreen: React.FC = () => {
    * - Filter: Filter transaction based on specific criteria (e.g., Name, Sender Bank, Beneficiary Bank, and Amount)
    * - Sort : Sort transaction based on specific field (e.g., Name A-Z, Name Z-A, Date Newest, Date Oldest)
    */
+
   return (
     <ScrollView>
       <View style={GlobalStyles.container}>
@@ -147,7 +148,15 @@ const HomeScreen: React.FC = () => {
         <View style={style.search}>
           <Icon name="search" style={style.searchIcon} />
           <TextInput
-            style={style.searchInput}
+            style={[
+              style.searchInput,
+              query.length > 0
+                ? {
+                    textDecorationLine: 'underline',
+                    textDecorationColor: 'black',
+                  }
+                : {},
+            ]}
             placeholder="Cari nama, bank, atau nominal"
             value={query} // Bind query value from Redux state
             onChangeText={handleQueryChange} // Update Redux state with query change
