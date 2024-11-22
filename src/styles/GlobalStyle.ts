@@ -29,8 +29,13 @@ const GlobalStyles = StyleSheet.create({
         fontSize: 16,
         marginVertical: 5,
     },
+    subTitle: {
+      fontWeight: '700',
+      fontSize: 16,
+      marginVertical: 5,
+  },
     body: {
-        fontWeight: '600',
+        fontWeight: '500',
         paddingVertical: 3,
     },
     spacerBottom: {

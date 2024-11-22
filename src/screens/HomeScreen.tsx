@@ -218,7 +218,9 @@ const HomeScreen: React.FC = () => {
                         style={[sortOption === option.value && style.radio]} // Highlight selected option
                       />
                     </View>
-                    <Text style={style.optionText}>{option.label}</Text>
+                    <Text style={[style.optionText, GlobalStyles.body]}>
+                      {option.label}
+                    </Text>
                   </View>
                 </TouchableOpacity>
               ))}

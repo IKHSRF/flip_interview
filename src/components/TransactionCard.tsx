@@ -115,7 +115,7 @@ const style = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    marginLeft: 3,
+    marginLeft: 5,
     marginRight: 3,
     width: 20, // Image width
     height: 15, // Image height
