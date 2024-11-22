@@ -4,7 +4,7 @@
 // Each property in the interface explained below
 
 interface Transaction {
-  /** 
+  /**
    * Unique identifier for the Transaction
    * Example: "FT54105"
    * This ID will be used to uniquely identity each Transaction
@@ -12,7 +12,7 @@ interface Transaction {
   **/
   id: string;
 
-  /** 
+  /**
    * Amount of money in the Transaction
    * Example: 439863
    * This field represent the total money transfered in the transaction
@@ -40,7 +40,7 @@ interface Transaction {
    * Example: "bni"
    * This field hold the name of sender bank
    * It can be used for filter transaction based on the sender bank name
-  **/ 
+  **/
   sender_bank: string;
 
   /**
@@ -90,14 +90,14 @@ interface Transaction {
   completed_at: string;
 
   /**
-   * Any fee associated with the transaction 
+   * Any fee associated with the transaction
    * Example: 0
-   * This field represent fee of the transaction 
+   * This field represent fee of the transaction
    * It is typically a number and can be zero if no fee is involved
   **/
  fee: number;
 }
 
-// `Transactions` is a type that represents a collection of transactions. Since in the json response each transaction is unique, 
+// `Transactions` is a type that represents a collection of transactions. Since in the json response each transaction is unique,
 // we will use a dictionary (or "record") to map each transaction's unique ID to its corresponding `Transaction` object.
 export type Transactions = Record<string, Transaction>;
