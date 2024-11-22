@@ -33,6 +33,9 @@ const GlobalStyles = StyleSheet.create({
         fontWeight: '600',
         paddingVertical: 3,
     },
+    spacerBottom: {
+      marginBottom: 10,
+    },
   });
 
 export default GlobalStyles;

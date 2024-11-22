@@ -1,6 +1,6 @@
 // src/components/TransactionCard.tsx
 import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {Transaction} from '../types/Transaction'; // Import the Transactions type
 import GlobalStyles from '../styles/GlobalStyle'; // Assuming you have global styles
@@ -9,68 +9,83 @@ import CustomButton from './Button'; // Assuming you have a CustomButton compone
 import {capitalizeFirstLetter} from '../utils/ToCamelCase';
 import {formatRupiah} from '../utils/FormatRupiah';
 import {formatDate} from '../utils/FormatDate';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackParamList} from '../App';
 
 interface TransactionCardProps {
   transaction: Transaction; // Define the transaction prop type
 }
 
+type DetailScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'Detail'
+>;
+
 const TransactionCard: React.FC<TransactionCardProps> = ({transaction}) => {
+  const navigation = useNavigation<DetailScreenNavigationProp>();
+
   return (
-    <View
-      style={[
-        style.transactionCardOuter,
-        transaction.status === 'PENDING'
-          ? {
-              backgroundColor: '#f46345',
-            }
-          : {
-              backgroundColor: '#54b987',
-            },
-      ]}>
-      <View style={style.transactionCard}>
-        <View>
-          <View style={GlobalStyles.row}>
-            {transaction.sender_bank.length > 3 ? (
-              <Text style={GlobalStyles.title}>
-                {capitalizeFirstLetter(transaction.sender_bank)}
-              </Text>
-            ) : (
-              <Text style={GlobalStyles.title}>
-                {transaction.sender_bank.toUpperCase()}
-              </Text>
-            )}
+    <TouchableOpacity
+      onPress={() => {
+        navigation.navigate('Detail', {itemId: transaction.id});
+      }}>
+      <View
+        style={[
+          style.transactionCardOuter,
+          transaction.status === 'PENDING'
+            ? {
+                backgroundColor: '#f46345',
+              }
+            : {
+                backgroundColor: '#54b987',
+              },
+        ]}>
+        <View style={style.transactionCard}>
+          <View>
+            <View style={GlobalStyles.row}>
+              {transaction.sender_bank.length > 3 ? (
+                <Text style={GlobalStyles.title}>
+                  {capitalizeFirstLetter(transaction.sender_bank)}
+                </Text>
+              ) : (
+                <Text style={GlobalStyles.title}>
+                  {transaction.sender_bank.toUpperCase()}
+                </Text>
+              )}
 
-            <Icon name="arrow-right" style={style.arrow} />
+              <Icon name="arrow-right" style={style.arrow} />
 
-            {transaction.beneficiary_bank.length > 4 ? (
-              <Text style={GlobalStyles.title}>
-                {capitalizeFirstLetter(transaction.beneficiary_bank)}
-              </Text>
-            ) : (
-              <Text style={GlobalStyles.title}>
-                {transaction.beneficiary_bank.toUpperCase()}
-              </Text>
-            )}
-          </View>
-          <Text style={GlobalStyles.body}>
-            {transaction.beneficiary_name.toUpperCase()}
-          </Text>
-          <View style={GlobalStyles.row}>
+              {transaction.beneficiary_bank.length > 4 ? (
+                <Text style={GlobalStyles.title}>
+                  {capitalizeFirstLetter(transaction.beneficiary_bank)}
+                </Text>
+              ) : (
+                <Text style={GlobalStyles.title}>
+                  {transaction.beneficiary_bank.toUpperCase()}
+                </Text>
+              )}
+            </View>
             <Text style={GlobalStyles.body}>
-              {formatRupiah(transaction.amount)}
+              {transaction.beneficiary_name.toUpperCase()}
             </Text>
-            <DotIcon size={6} color="black" />
-            <Text style={GlobalStyles.body}>
-              {formatDate(transaction.created_at)}
-            </Text>
+            <View style={GlobalStyles.row}>
+              <Text style={GlobalStyles.body}>
+                {formatRupiah(transaction.amount)}
+              </Text>
+              <DotIcon size={6} color="black" />
+              <Text style={GlobalStyles.body}>
+                {formatDate(transaction.created_at)}
+              </Text>
+            </View>
           </View>
-        </View>
-        <View style={GlobalStyles.flexRow} />
-        <View>
-          <CustomButton type={transaction.status} onPress={() => {}} />
+          <View style={GlobalStyles.flexRow} />
+          <View>
+            <CustomButton type={transaction.status} onPress={() => {}} />
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
