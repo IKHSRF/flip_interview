@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux'; // Hook for dispatching Redux actions
-import { setTransactions, setLoading, setError } from '../state/transactionSlice'; // Import Redux actions to update the state
+import { setTransactions, setLoading, setError } from '../state/TransactionSlice'; // Import Redux actions to update the state
 import { fetchData } from '../services/TransactionServices'; // Import the custom fetch function from services
 
 /**
@@ -24,7 +24,7 @@ const useFetch = (url: string) => {
 
         // Dispatch the action to store the fetched transactions in the Redux state
         // The data is expected to be in a structure suitable for Redux (e.g., an array of transactions)
-        dispatch(setTransactions(data));
+        dispatch(setTransactions(Object.values(data))); // Convert object to array if needed
 
         // Once the data is fetched successfully, dispatch the `setLoading` action to stop the loading indicator
         dispatch(setLoading(false));
