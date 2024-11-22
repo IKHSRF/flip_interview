@@ -3,7 +3,7 @@
 // The 'Transaction' interface specifies the properties of object will have.
 // Each property in the interface explained below
 
-interface Transaction {
+export interface Transaction {
   /**
    * Unique identifier for the Transaction
    * Example: "FT54105"
