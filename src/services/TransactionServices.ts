@@ -5,9 +5,6 @@ export const fetchData = async (url: string): Promise<any> => {
         // Attempt to fetch data from the provided URL using the Fetch API.
         const response = await fetch(url);
 
-        // Log the entire response object for debugging purposes.
-        console.log(response);
-
         // Check if the response status is not OK (status code outside the range 200–299).
         if (!response.ok) {
             // Throw an error with a custom message if the fetch operation failed.
