@@ -1,6 +1,5 @@
 import React from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import GlobalStyles from '../styles/GlobalStyle';
 // import {Transaction} from '../types/Transaction';
 import {useSelector} from 'react-redux';
@@ -64,7 +63,11 @@ const DetailScreen: React.FC<Props> = ({route}) => {
             </Text>
           )}
 
-          <Icon name="arrow-right" style={style.arrow} />
+          <Image
+            source={require('../assets/arrow.png')} // Use require for local assets
+            style={style.arrowImage}
+            resizeMode="cover" // Optional: Adjust how the image fits
+          />
 
           {transaction!.beneficiary_bank.length > 4 ? (
             <Text style={GlobalStyles.title}>
@@ -166,6 +169,12 @@ const style = StyleSheet.create({
     marginLeft: 6,
     width: 18, // Image width
     height: 18, // Image height
+  },
+  arrowImage: {
+    marginLeft: 3,
+    marginRight: 3,
+    width: 20, // Image width
+    height: 15, // Image height
   },
 });
 

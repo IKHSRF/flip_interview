@@ -22,8 +22,8 @@ import {
   TouchableOpacity,
   ScrollView,
   Modal,
+  Image,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import GlobalStyles from '../styles/GlobalStyle';
 import TransactionCard from '../components/TransactionCard';
 
@@ -146,7 +146,11 @@ const HomeScreen: React.FC = () => {
       <View style={GlobalStyles.container}>
         {/* Search Input and Sort Filter */}
         <View style={style.search}>
-          <Icon name="search" style={style.searchIcon} />
+          <Image
+            source={require('../assets/search.png')} // Use require for local assets
+            style={style.image}
+            resizeMode="cover" // Optional: Adjust how the image fits
+          />
           <TextInput
             style={[
               style.searchInput,
@@ -165,7 +169,11 @@ const HomeScreen: React.FC = () => {
             onPress={() => setShowFilter(!showFilter)} // Toggle filter dialog visibility
             style={GlobalStyles.row}>
             <Text style={style.filterText}>{getSortLabel()}</Text>
-            <Icon name="chevron-down" style={style.filterIcon} />
+            <Image
+              source={require('../assets/down.png')} // Use require for local assets
+              style={style.image}
+              resizeMode="cover" // Optional: Adjust how the image fits
+            />
           </TouchableOpacity>
         </View>
         <View style={GlobalStyles.spacerHeight} />
@@ -224,14 +232,14 @@ const HomeScreen: React.FC = () => {
 
 const style = StyleSheet.create({
   search: {
-    padding: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 12,
     backgroundColor: 'white',
     borderRadius: 8,
     flexDirection: 'row',
     alignItems: 'center',
   },
   filterText: {
-    paddingEnd: 5,
     color: '#f46345',
     fontWeight: 'bold',
   },
@@ -243,13 +251,17 @@ const style = StyleSheet.create({
   searchInput: {
     flex: 1,
     padding: 0,
-    marginStart: 5,
+    marginLeft: 5,
     color: 'gray',
   },
   searchIcon: {
     paddingEnd: 5,
     fontSize: 15,
     color: 'gray',
+  },
+  image: {
+    width: 23, // Image width
+    height: 23, // Image height
   },
   filterOption: {
     paddingVertical: 5,

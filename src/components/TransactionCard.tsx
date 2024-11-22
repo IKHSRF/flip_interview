@@ -1,7 +1,7 @@
 // src/components/TransactionCard.tsx
 import React from 'react';
-import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import {View, StyleSheet, Text, TouchableOpacity, Image} from 'react-native';
+
 import {Transaction} from '../types/Transaction'; // Import the Transactions type
 import GlobalStyles from '../styles/GlobalStyle'; // Assuming you have global styles
 import DotIcon from './DottedIcon'; // Assuming you have a DotIcon component
@@ -54,7 +54,11 @@ const TransactionCard: React.FC<TransactionCardProps> = ({transaction}) => {
                 </Text>
               )}
 
-              <Icon name="arrow-right" style={style.arrow} />
+              <Image
+                source={require('../assets/arrow.png')} // Use require for local assets
+                style={style.image}
+                resizeMode="cover" // Optional: Adjust how the image fits
+              />
 
               {transaction.beneficiary_bank.length > 4 ? (
                 <Text style={GlobalStyles.title}>
@@ -109,6 +113,12 @@ const style = StyleSheet.create({
     paddingLeft: 10,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  image: {
+    marginLeft: 3,
+    marginRight: 3,
+    width: 20, // Image width
+    height: 15, // Image height
   },
 });
 
