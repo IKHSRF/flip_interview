@@ -26,7 +26,7 @@ const DetailScreen: React.FC<Props> = ({route}) => {
   return (
     <View style={style.detailCard}>
       <View style={GlobalStyles.row}>
-        <Text style={[GlobalStyles.title, style.paddingLeft]}>
+        <Text style={[GlobalStyles.subTitle, style.paddingLeft]}>
           ID TRANSAKSI:{' '}
         </Text>
         <Text style={GlobalStyles.title}>#{transaction!.id}</Text>
@@ -44,7 +44,7 @@ const DetailScreen: React.FC<Props> = ({route}) => {
             justifyContent: 'space-between',
           },
         ]}>
-        <Text style={[GlobalStyles.title, style.paddingLeft]}>
+        <Text style={[GlobalStyles.subTitle, style.paddingLeft]}>
           DETAIL TRANSAKSI:{' '}
         </Text>
         <Text style={[style.orangeText, style.paddingRight]}>Tutup</Text>
@@ -79,56 +79,45 @@ const DetailScreen: React.FC<Props> = ({route}) => {
             </Text>
           )}
         </View>
+
         <View style={GlobalStyles.spacerBottom} />
-        <View
-          style={[
-            GlobalStyles.row,
-            {
-              justifyContent: 'space-between',
-              marginEnd: 50,
-            },
-          ]}>
-          <View>
-            <Text style={GlobalStyles.title}>
+
+        <View style={GlobalStyles.row}>
+          {/* First Column */}
+          <View style={[style.column, {flex: 2}]}>
+            <Text style={GlobalStyles.subTitle}>
               {transaction!.beneficiary_name}
             </Text>
             <Text style={GlobalStyles.body}>{transaction!.account_number}</Text>
           </View>
-          <View>
-            <View>
-              <Text style={GlobalStyles.title}>NOMINAL</Text>
-              <Text style={GlobalStyles.body}>
-                {formatRupiah(transaction!.amount)}
-              </Text>
-            </View>
+
+          {/* Second Column */}
+          <View style={[style.column, {flex: 1}]}>
+            <Text style={GlobalStyles.subTitle}>Nominal</Text>
+            <Text style={GlobalStyles.body}>
+              {formatRupiah(transaction!.amount)}
+            </Text>
           </View>
         </View>
-
         <View style={GlobalStyles.spacerBottom} />
 
-        <View
-          style={[
-            GlobalStyles.row,
-            {
-              justifyContent: 'space-between',
-              marginEnd: 50,
-            },
-          ]}>
-          <View>
-            <Text style={GlobalStyles.title}>BERITA TRANSFER</Text>
+        <View style={GlobalStyles.row}>
+          {/* First Column */}
+          <View style={[style.column, {flex: 2}]}>
+            <Text style={GlobalStyles.subTitle}>BERITA TRANSFER</Text>
             <Text style={GlobalStyles.body}>{transaction!.remark}</Text>
           </View>
-          <View>
-            <View>
-              <Text style={GlobalStyles.title}>KODE UNIK</Text>
-              <Text style={GlobalStyles.body}>{transaction!.unique_code}</Text>
-            </View>
+
+          {/* Second Column */}
+          <View style={[style.column, {flex: 1}]}>
+            <Text style={GlobalStyles.subTitle}>KODE UNIK</Text>
+            <Text style={GlobalStyles.body}>{transaction!.unique_code}</Text>
           </View>
         </View>
 
         <View style={GlobalStyles.spacerBottom} />
 
-        <Text style={GlobalStyles.title}>WAKTU DIBUAT</Text>
+        <Text style={GlobalStyles.subTitle}>WAKTU DIBUAT</Text>
         <Text style={GlobalStyles.body}>
           {formatDate(transaction!.created_at)}
         </Text>
@@ -138,6 +127,11 @@ const DetailScreen: React.FC<Props> = ({route}) => {
 };
 
 const style = StyleSheet.create({
+  column: {
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
   detailCard: {
     paddingVertical: 16,
     marginVertical: 20,
