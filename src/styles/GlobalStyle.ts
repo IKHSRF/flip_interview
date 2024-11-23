@@ -41,6 +41,17 @@ const GlobalStyles = StyleSheet.create({
     spacerBottom: {
       marginBottom: 10,
     },
+    spaceBetween: {
+      justifyContent: 'space-between',
+    },
+    paddingHorizontal: {
+      paddingHorizontal: 16,
+    },
+    orangeText: {
+      color: '#f46345',
+      fontWeight: 'bold',
+      marginVertical: 5,
+    },
   });
 
 export default GlobalStyles;

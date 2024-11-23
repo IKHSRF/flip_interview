@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux'; // Hook for dispatching Redux actions
-import { setTransactions, setLoading, setError } from '../state/TransactionSlice'; // Import Redux actions to update the state
-import { fetchData } from '../services/TransactionServices'; // Import the custom fetch function from services
+import { useDispatch } from 'react-redux';
+import { setTransactions, setLoading, setError } from '../state/TransactionSlice';
+import { fetchData } from '../services/TransactionServices';
 
 /**
  * Custom hook to fetch transaction data from a given URL using the `fetchData` service function.

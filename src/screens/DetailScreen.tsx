@@ -1,131 +1,130 @@
 import React from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
 import GlobalStyles from '../styles/GlobalStyle';
-// import {Transaction} from '../types/Transaction';
 import {useSelector} from 'react-redux';
-import {RootState} from '../state/TransactionStore'; // Import RootState type for type safety
+import {RootState} from '../state/TransactionStore';
 import {RouteProp} from '@react-navigation/native';
-import {RootStackParamList} from '../App'; // Import your RootStackParamList type
-import {capitalizeFirstLetter} from '../utils/ToCamelCase';
-import {formatRupiah} from '../utils/FormatRupiah';
-import {formatDate} from '../utils/FormatDate';
+import {RootStackParamList} from '../App';
+import {formatBankName, formatRupiah, formatDate, IMAGES} from '../utils/index';
+import DetailRow from '../components/DetailRow';
+import HorizontalLine from '../components/HorizontalLine';
 
+// Define the type for the route prop that comes with the navigation to this screen
 type DetailScreenRouteProp = RouteProp<RootStackParamList, 'Detail'>;
 
 interface Props {
-  route: DetailScreenRouteProp;
+  route: DetailScreenRouteProp; // Define route prop for accessing navigation params
 }
 
+// DetailScreen component receives the route prop from React Navigation
 const DetailScreen: React.FC<Props> = ({route}) => {
-  const {itemId} = route.params; // Access the parameter
+  const {itemId} = route.params; // Access the 'itemId' parameter passed to this screen
 
-  // Accessing the transaction state from Redux
+  // Access the Redux store using useSelector to get the list of transactions
   const {transactions} = useSelector((state: RootState) => state.transactions);
+
+  // Find the transaction from the list using the itemId from route params
   const transaction = transactions.find(t => t.id === itemId);
 
+  // If the transaction is not found, return a message indicating so
+  if (!transaction) {
+    return (
+      <View>
+        <Text style={GlobalStyles.body}>Transaction not found.</Text>
+      </View>
+    );
+  }
+
   return (
+    // Main container for the transaction details
     <View style={style.detailCard}>
-      <View style={GlobalStyles.row}>
-        <Text style={[GlobalStyles.subTitle, style.paddingLeft]}>
-          ID TRANSAKSI:{' '}
-        </Text>
-        <Text style={GlobalStyles.title}>#{transaction!.id}</Text>
+      <View style={[GlobalStyles.row, GlobalStyles.paddingHorizontal]}>
+        <Text style={GlobalStyles.subTitle}>ID TRANSAKSI: </Text>
+        <Text style={GlobalStyles.title}>#{transaction.id}</Text>
         <Image
-          source={require('../assets/copy.png')} // Use require for local assets
+          source={IMAGES.copy} // Use local image asset for copy icon
           style={style.image}
-          resizeMode="cover" // Optional: Adjust how the image fits
+          resizeMode="cover" // Ensure the image fits within the defined space
         />
       </View>
-      <View style={style.horizontalLine} />
-      <View
-        style={[
-          GlobalStyles.row,
-          {
-            justifyContent: 'space-between',
-          },
-        ]}>
-        <Text style={[GlobalStyles.subTitle, style.paddingLeft]}>
-          DETAIL TRANSAKSI:{' '}
-        </Text>
-        <Text style={[style.orangeText, style.paddingRight]}>Tutup</Text>
-      </View>
-      <View style={style.horizontalLine} />
 
-      <View style={[style.paddingLeft, style.paddingRight]}>
+      <HorizontalLine />
+
+      <View style={[GlobalStyles.row, GlobalStyles.spaceBetween]}>
+        <Text style={[GlobalStyles.subTitle, GlobalStyles.paddingHorizontal]}>
+          DETAIL TRANSAKSI
+        </Text>
+        <Text style={[GlobalStyles.orangeText, GlobalStyles.paddingHorizontal]}>
+          Tutup
+        </Text>
+      </View>
+
+      <HorizontalLine />
+
+      <View style={GlobalStyles.paddingHorizontal}>
         <View style={GlobalStyles.row}>
-          {transaction!.sender_bank.length > 3 ? (
-            <Text style={GlobalStyles.title}>
-              {capitalizeFirstLetter(transaction!.sender_bank)}
-            </Text>
-          ) : (
-            <Text style={GlobalStyles.title}>
-              {transaction!.sender_bank.toUpperCase()}
-            </Text>
-          )}
+          <Text style={GlobalStyles.title}>
+            {
+              formatBankName(transaction.sender_bank) // Format sender bank name
+            }
+          </Text>
 
           <Image
-            source={require('../assets/arrow.png')} // Use require for local assets
+            source={IMAGES.arrow}
             style={style.arrowImage}
-            resizeMode="cover" // Optional: Adjust how the image fits
+            resizeMode="cover"
           />
 
-          {transaction!.beneficiary_bank.length > 4 ? (
-            <Text style={GlobalStyles.title}>
-              {capitalizeFirstLetter(transaction!.beneficiary_bank)}
-            </Text>
-          ) : (
-            <Text style={GlobalStyles.title}>
-              {transaction!.beneficiary_bank.toUpperCase()}
-            </Text>
-          )}
+          <Text style={GlobalStyles.title}>
+            {
+              formatBankName(transaction.beneficiary_bank) // Format beneficiary bank name
+            }
+          </Text>
         </View>
 
         <View style={GlobalStyles.spacerBottom} />
 
         <View style={GlobalStyles.row}>
-          {/* First Column */}
-          <View style={[style.column, {flex: 2}]}>
-            <Text style={GlobalStyles.subTitle}>
-              {transaction!.beneficiary_name}
-            </Text>
-            <Text style={GlobalStyles.body}>{transaction!.account_number}</Text>
-          </View>
-
-          {/* Second Column */}
-          <View style={[style.column, {flex: 1}]}>
-            <Text style={GlobalStyles.subTitle}>Nominal</Text>
-            <Text style={GlobalStyles.body}>
-              {formatRupiah(transaction!.amount)}
-            </Text>
-          </View>
+          <DetailRow
+            flex={2}
+            title={transaction.beneficiary_name}
+            value={transaction.account_number.toString()} // Display account number
+          />
+          <DetailRow
+            flex={1}
+            title="Amount"
+            value={formatRupiah(transaction.amount)} // Format amount as Rupiah
+          />
         </View>
+
         <View style={GlobalStyles.spacerBottom} />
 
         <View style={GlobalStyles.row}>
-          {/* First Column */}
-          <View style={[style.column, {flex: 2}]}>
-            <Text style={GlobalStyles.subTitle}>BERITA TRANSFER</Text>
-            <Text style={GlobalStyles.body}>{transaction!.remark}</Text>
-          </View>
-
-          {/* Second Column */}
-          <View style={[style.column, {flex: 1}]}>
-            <Text style={GlobalStyles.subTitle}>KODE UNIK</Text>
-            <Text style={GlobalStyles.body}>{transaction!.unique_code}</Text>
-          </View>
+          <DetailRow
+            flex={2}
+            title="BERITA TRANSFER" // Transaction remark label
+            value={transaction.remark} // Display transaction remark
+          />
+          <DetailRow
+            flex={1}
+            title="KODE UNIK" // Unique code label
+            value={transaction.unique_code.toString()} // Display unique code
+          />
         </View>
 
         <View style={GlobalStyles.spacerBottom} />
 
-        <Text style={GlobalStyles.subTitle}>WAKTU DIBUAT</Text>
-        <Text style={GlobalStyles.body}>
-          {formatDate(transaction!.created_at)}
-        </Text>
+        <DetailRow
+          flex={0}
+          title="Waktu Dibuat"
+          value={formatDate(transaction.created_at)} // Format transaction creation date
+        />
       </View>
     </View>
   );
 };
 
+// Styles for the component
 const style = StyleSheet.create({
   column: {
     flexDirection: 'column',
@@ -137,38 +136,16 @@ const style = StyleSheet.create({
     marginVertical: 20,
     backgroundColor: 'white',
   },
-  arrow: {
-    fontSize: 16.0,
-    paddingHorizontal: 5,
-  },
-  paddingLeft: {
-    paddingLeft: 16,
-  },
-  paddingRight: {
-    paddingRight: 16,
-  },
-  orangeText: {
-    color: '#f46345',
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginVertical: 5,
-  },
-  horizontalLine: {
-    height: 1, // Thin line
-    backgroundColor: '#f0f0f0', // Line color
-    width: '100%', // Full-width
-    marginVertical: 20, // Optional spacing
-  },
   image: {
     marginLeft: 6,
-    width: 18, // Image width
-    height: 18, // Image height
+    width: 18,
+    height: 18,
   },
   arrowImage: {
     marginLeft: 3,
     marginRight: 3,
-    width: 20, // Image width
-    height: 15, // Image height
+    width: 20,
+    height: 15,
   },
 });
 

@@ -37,6 +37,7 @@ import useFetch from '../hooks/TransactionHooks';
 
 // Import the Transactions type
 import {Transaction} from '../types/Transaction';
+import {IMAGES} from '../utils/index';
 
 /**
  * Filters the transactions based on the search query.
@@ -147,7 +148,7 @@ const HomeScreen: React.FC = () => {
         {/* Search Input and Sort Filter */}
         <View style={style.search}>
           <Image
-            source={require('../assets/search.png')} // Use require for local assets
+            source={IMAGES.search} // Use require for local assets
             style={style.image}
             resizeMode="cover" // Optional: Adjust how the image fits
           />
@@ -168,9 +169,9 @@ const HomeScreen: React.FC = () => {
           <TouchableOpacity
             onPress={() => setShowFilter(!showFilter)} // Toggle filter dialog visibility
             style={GlobalStyles.row}>
-            <Text style={style.filterText}>{getSortLabel()}</Text>
+            <Text style={GlobalStyles.orangeText}>{getSortLabel()}</Text>
             <Image
-              source={require('../assets/down.png')} // Use require for local assets
+              source={IMAGES.dropdown} // Use require for local assets
               style={style.image}
               resizeMode="cover" // Optional: Adjust how the image fits
             />
@@ -241,29 +242,15 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  filterText: {
-    color: '#f46345',
-    fontWeight: 'bold',
-  },
-  filterIcon: {
-    fontSize: 20,
-    color: '#f46345',
-  },
-
   searchInput: {
     flex: 1,
     padding: 0,
     marginLeft: 5,
     color: 'gray',
   },
-  searchIcon: {
-    paddingEnd: 5,
-    fontSize: 15,
-    color: 'gray',
-  },
   image: {
-    width: 23, // Image width
-    height: 23, // Image height
+    width: 23,
+    height: 23,
   },
   filterOption: {
     paddingVertical: 5,
@@ -308,9 +295,9 @@ const style = StyleSheet.create({
     alignItems: 'center',
   },
   radio: {
-    width: 10, // Slightly smaller for better centering inside the outer circle
+    width: 10,
     height: 10,
-    borderRadius: 10, // Rounded for a perfect circle
+    borderRadius: 10,
     backgroundColor: '#f46345',
   },
   radioOuter: {
@@ -320,8 +307,8 @@ const style = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#f46345',
     marginRight: 10,
-    justifyContent: 'center', // Center child vertically
-    alignItems: 'center', // Center child horizontally
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

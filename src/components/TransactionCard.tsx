@@ -1,104 +1,98 @@
-// src/components/TransactionCard.tsx
 import React from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, Image} from 'react-native';
-
-import {Transaction} from '../types/Transaction'; // Import the Transactions type
-import GlobalStyles from '../styles/GlobalStyle'; // Assuming you have global styles
-import DotIcon from './DottedIcon'; // Assuming you have a DotIcon component
-import CustomButton from './Button'; // Assuming you have a CustomButton component
-import {capitalizeFirstLetter} from '../utils/ToCamelCase';
-import {formatRupiah} from '../utils/FormatRupiah';
-import {formatDate} from '../utils/FormatDate';
+import {Transaction} from '../types/Transaction';
+import GlobalStyles from '../styles/GlobalStyle';
+import DotIcon from './DottedIcon';
+import StatusComponent from './StatusComponent';
+import {formatBankName, formatRupiah, formatDate, IMAGES} from '../utils/index';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../App';
 
+// Define the props type for the TransactionCard component
 interface TransactionCardProps {
-  transaction: Transaction; // Define the transaction prop type
+  transaction: Transaction;
 }
 
+// Type for the navigation prop for the 'Detail' screen
 type DetailScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   'Detail'
 >;
 
+// TransactionCard component that takes a transaction object as a prop
 const TransactionCard: React.FC<TransactionCardProps> = ({transaction}) => {
   const navigation = useNavigation<DetailScreenNavigationProp>();
 
   return (
     <TouchableOpacity
       onPress={() => {
+        // When the card is tapped, navigate to the 'Detail' screen and pass the transaction ID
         navigation.navigate('Detail', {itemId: transaction.id});
       }}>
       <View
         style={[
           style.transactionCardOuter,
-          transaction.status === 'PENDING'
-            ? {
-                backgroundColor: '#f46345',
-              }
-            : {
-                backgroundColor: '#54b987',
-              },
+          {
+            // Dynamically set background color based on the transaction status
+            backgroundColor:
+              transaction.status === 'PENDING' ? '#f46345' : '#54b987', // Red for pending, green for completed
+          },
         ]}>
         <View style={style.transactionCard}>
-          <View>
+          <View style={{flex: 3}}>
             <View style={GlobalStyles.row}>
-              {transaction.sender_bank.length > 3 ? (
-                <Text style={GlobalStyles.title}>
-                  {capitalizeFirstLetter(transaction.sender_bank)}
-                </Text>
-              ) : (
-                <Text style={GlobalStyles.title}>
-                  {transaction.sender_bank.toUpperCase()}
-                </Text>
-              )}
+              <Text style={GlobalStyles.title}>
+                {
+                  formatBankName(transaction.sender_bank) //Format and display sender's bank name
+                }
+              </Text>
 
               <Image
-                source={require('../assets/arrow.png')} // Use require for local assets
-                style={style.image}
-                resizeMode="cover" // Optional: Adjust how the image fits
+                source={IMAGES.arrow} // Use the imported arrow image for transaction direction
+                style={style.image} // Style for the arrow image
+                resizeMode="cover" // Set the image resize mode
               />
 
-              {transaction.beneficiary_bank.length > 4 ? (
-                <Text style={GlobalStyles.title}>
-                  {capitalizeFirstLetter(transaction.beneficiary_bank)}
-                </Text>
-              ) : (
-                <Text style={GlobalStyles.title}>
-                  {transaction.beneficiary_bank.toUpperCase()}
-                </Text>
-              )}
+              <Text style={GlobalStyles.title}>
+                {
+                  formatBankName(transaction.beneficiary_bank) //Format and display beneficiary's bank name
+                }
+              </Text>
             </View>
+
             <Text style={GlobalStyles.body}>
-              {transaction.beneficiary_name.toUpperCase()}
+              {
+                transaction.beneficiary_name.toUpperCase() //Format and display the transaction amount
+              }
             </Text>
+
             <View style={GlobalStyles.row}>
               <Text style={GlobalStyles.body}>
-                {formatRupiah(transaction.amount)}
+                {
+                  formatRupiah(transaction.amount) //Format and display the transaction amount
+                }
               </Text>
-              <DotIcon size={6} color="black" />
+              <DotIcon />
               <Text style={GlobalStyles.body}>
-                {formatDate(transaction.created_at)}
+                {
+                  formatDate(transaction.created_at) //Format and display the transaction date
+                }
               </Text>
             </View>
           </View>
-          <View style={GlobalStyles.flexRow} />
-          <View>
-            <CustomButton type={transaction.status} onPress={() => {}} />
-          </View>
+
+          <StatusComponent type={transaction.status} />
         </View>
       </View>
     </TouchableOpacity>
   );
 };
 
+// Define styles for the TransactionCard component
 const style = StyleSheet.create({
-  arrow: {
-    fontSize: 16.0,
-    paddingHorizontal: 5,
-  },
   transactionCard: {
+    flex: 1,
     backgroundColor: 'white',
     padding: 14.0,
     paddingVertical: 18,
@@ -117,8 +111,8 @@ const style = StyleSheet.create({
   image: {
     marginLeft: 5,
     marginRight: 3,
-    width: 20, // Image width
-    height: 15, // Image height
+    width: 20,
+    height: 15,
   },
 });
 

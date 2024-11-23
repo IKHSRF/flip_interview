@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'; // Tools for creating a Redux slice and defining action payloads
-import { Transaction } from '../types/Transaction'; // Transaction type for type safety
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Transaction } from '../types/Transaction';
 
 // Define the shape of the state managed by this slice
 interface TransactionState {
